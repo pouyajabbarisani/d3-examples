@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>D3 - 9</title>
+   <script src="https://d3js.org/d3.v6.js"></script>
+</head>
+
+<body>
+   <p>introduction to path</p>
+
+   <script>
+
+      const canvas = d3.select('body').append('svg').attr('width', 500).attr('height', 500);
+
+      const data = [{ x: 10, y: 20 }, { x: 15, y: 40 }, { x: 20, y: 60 }, { x: 35, y: 50 }, { x: 50, y: 45 }];
+
+      const group = canvas.append('g');
+
+      const pathGenerator = d3.line()
+         .x(d => d.x)
+         .y(d => d.y);
+
+      group.selectAll('path')
+         .data([data]) // putting in an array to be a sigle value
+         .enter()
+         .append('path')
+         .attr('d', pathGenerator)
+         .attr('fill', 'none')
+         .attr('stroke', '#09d')
+         .attr('stroke-width', 3);
+
+   </script>
+
+</body>
+
+</html>

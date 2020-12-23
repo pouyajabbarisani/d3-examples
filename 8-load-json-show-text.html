@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>D3 - 8</title>
+   <script src="https://d3js.org/d3.v6.js"></script>
+</head>
+
+<body>
+   <p>External data load from JSON file and also showing a text label for entities</p>
+
+   <script>
+
+      d3.json('path/to/file.json', function (data) { // or d3.csv if the format is csv
+         // create canvas
+         // select and enter rectangles
+
+         // if we want to add text to our pathes, we can use text just like below
+         canvas.selectAll('text')
+            .data(data)
+            .enter()
+            .append('text')
+            .attr('fill', 'white')
+            .attr('y', (d, i) => i * 1) // return proper calculated value for vertical position
+            .text((d) => d.name);
+
+      });
+
+   </script>
+
+</body>
+
+</html>

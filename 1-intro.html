@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>D3 - 1</title>
+   <script src="https://d3js.org/d3.v6.js"></script>
+</head>
+
+<body>
+
+   <script>
+      const canvas = d3.select('body').append('svg').attr('width', 500).attr('height', 500);
+      const circle = canvas.append('circle')
+         .attr('cx', 250) // position for circle, c -> center, x -> horizontal
+         .attr('cy', 250) // position for circle, y -> vertical
+         .attr('r', 40) // radius
+         .attr('fill', 'red');
+
+      const rectangle = canvas.append('rect')
+         .attr('x', 50) // position 
+         .attr('y', 10) // position
+         .attr('width', 220)
+         .attr('height', 50)
+         .attr('fill', 'blue');
+
+      const line = canvas.append('line')
+         .attr('x1', 20)
+         .attr('y1', 50)
+         .attr('x2', 100)
+         .attr('y2', 33)
+         .attr('stroke', 'rgba(100, 140, 222, 0.5)') // line colour
+         .attr('stroke-width', 5); // default stroke width is 1px
+
+      // // Initial basic example:
+      // d3.select('body').append('p').text('Wow');
+      // d3.select('p').text('Hi');
+   </script>
+
+</body>
+
+</html>

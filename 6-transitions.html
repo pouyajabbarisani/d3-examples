@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>D3 - 6</title>
+   <script src="https://d3js.org/d3.v6.js"></script>
+</head>
+
+<body>
+   <p>Transition</p>
+
+   <script>
+
+      const canvas = d3.select('body').append('svg').attr('width', 500).attr('height', 500);
+
+      const circle = canvas.append('circle').attr('cx', 50).attr('cy', 50).attr('r', 25);
+
+      repeat();
+
+      function repeat() {
+         circle.transition()
+            .duration(1500)
+            .delay(1000) // start after 1 sec
+            .attr('cx', 150)
+            .on('start', function () {
+               d3.select(this).attr('fill', 'red');
+            })
+            .transition()
+            .duration(4000)
+            .attr('cx', 250)
+            .on('end', function () {
+               d3.select(this).attr('cx', 50).attr('cy', 50);
+               repeat();
+            });
+      }
+
+   </script>
+
+</body>
+
+</html>

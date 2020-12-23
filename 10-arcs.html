@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>D3 - 10</title>
+   <script src="https://d3js.org/d3.v6.js"></script>
+</head>
+
+<body>
+   <p>introduction to arcs</p>
+
+   <script>
+
+      const canvas = d3.select('body').append('svg').attr('width', 500).attr('height', 500);
+
+      const group = canvas.append('g').attr('transform', 'translate(200, 200)');
+
+      const r = 200;
+      const p = Math.PI / 180; // convert from degs to radian
+
+      const arcGenerator = d3.arc()
+         .innerRadius(r - 50)
+         .outerRadius(r)
+         .startAngle(0)
+         .endAngle(270 * p); // to get radian value
+
+      group.append('path')
+         .attr('d', arcGenerator)
+         .attr('fill', '#0aa');
+
+
+   </script>
+
+</body>
+
+</html>

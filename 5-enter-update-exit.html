@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>D3 - 5</title>
+   <script src="https://d3js.org/d3.v6.js"></script>
+</head>
+
+<body>
+   <p>Check out the commented cases</p>
+
+   <script>
+
+      // DOM elements < data elements => enter
+      // Dom elements > data elements => exit
+      // Dom elements = data elements => update
+
+      const canvas = d3.select('body').append('svg').attr('width', 500).attr('height', 500);
+
+      // // case 1: when there isn't any circle created before, It will gonna create a one with enter because there is one index in data array
+      // const data = [10]; // by the way, these data are just for index and we don't use them in these examples
+      // const circles = canvas.selectAll('circle')
+      //    .data(data)
+      //    .enter()
+      //    .append('circle')
+      //    .attr('cx', 50)
+      //    .attr('cy', 50)
+      //    .attr('r', 25);
+
+
+      // // case 2: there is a circle and there is an index, so it will related them together without using enter (just update)
+      // const data = [10]; // by the way, these data are just for index and we don't use them in these examples
+      // const circle = canvas.append('circle')
+      //    .attr('cx', 50)
+      //    .attr('cy', 100)
+      //    .attr('r', 25);
+      // const circles = canvas.selectAll('circle')
+      //    .data(data)
+      //    .enter()
+      //    .append('circle')
+      //    .attr('cx', 50)
+      //    .attr('cy', 50)
+      //    .attr('r', 25);
+
+
+      // // case 3: two indexes, one will match by existed circle (update) and for the second, it will create another circle with enter
+      // const data = [10, 12]; // by the way, these data are just for index and we don't use them in these examples
+      // const circle = canvas.append('circle')
+      //    .attr('cx', 50)
+      //    .attr('cy', 100)
+      //    .attr('r', 25);
+      // const circles = canvas.selectAll('circle')
+      //    .data(data)
+      //    .attr('fill', 'red') // for update ones
+      //    .enter()
+      //    .append('circle')
+      //    .attr('fill', 'blue') // for enter ones
+      //    .attr('cx', 50)
+      //    .attr('cy', 50)
+      //    .attr('r', 25);
+
+
+      // // case 4: Indexes are fewer than circles (for using exist method)
+      // const data = [10]; // by the way, these data are just for index and we don't use them in these examples
+      // const circle1 = canvas.append('circle')
+      //    .attr('cx', 50)
+      //    .attr('cy', 100)
+      //    .attr('r', 25);
+      // const circle2 = canvas.append('circle')
+      //    .attr('cx', 50)
+      //    .attr('cy', 200)
+      //    .attr('r', 25);
+      // const circles = canvas.selectAll('circle')
+      //    .data(data)
+      //    .attr('fill', 'blue') // for update ones
+      //    .exit()
+      //    .attr('fill', 'red') // for exist ones
+      //    .attr('opacity', '0.5') // for exist ones
+
+   </script>
+
+</body>
+
+</html>

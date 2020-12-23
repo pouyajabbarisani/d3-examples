@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>D3 - 3</title>
+   <script src="https://d3js.org/d3.v6.js"></script>
+</head>
+
+<body>
+
+   <p>Having relative width according to contianer width</p>
+
+   <script>
+      const data = [552, 90, 210, 340, 700]; // these are domain values and results after scaling values are rages.
+      const width = 500;
+      const height = 500;
+
+      const widthScale = d3.scaleLinear().domain([0, 700]).range([0, width]); // when we pass item to it, it will return scaled value
+
+      const colourScale = d3.scaleLinear().domain([0, 350, 700]).range(['red', 'blue', 'green']);
+
+      const canvas = d3.select('body').append('svg').attr('width', width).attr('height', height);
+
+      const bars = canvas.selectAll('rect') // without selecting 'rect' which is empty at this point, it will not work.
+         .data(data)
+         .enter()
+         .append('rect')
+         .attr('width', (d) => widthScale(d)) // it will scale up the value according to widthScale
+         .attr('height', 30)
+         .attr('fill', (d) => colourScale(d)) // it will generate proper color
+         .attr('y', (d, i) => 40 * i);
+
+   </script>
+
+</body>
+
+</html>

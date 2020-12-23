@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>D3 - 2</title>
+   <script src="https://d3js.org/d3.v6.js"></script>
+</head>
+
+<body>
+
+
+   <script>
+      const data = [242, 140, 340];
+      const canvas = d3.select('body').append('svg').attr('width', 500).attr('height', 500);
+
+      const bars = canvas.selectAll('rect') // without selecting 'rect' which is empty at this point, it will not work.
+         .data(data)
+         .enter()
+         .append('rect')
+         .attr('width', (d) => d)
+         .attr('height', 3)
+         .attr('y', (d, i) => 10 * i);
+
+   </script>
+
+</body>
+
+</html>

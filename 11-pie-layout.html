@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>D3 - 11</title>
+   <script src="https://d3js.org/d3.v6.js"></script>
+</head>
+
+<body>
+   <p>introduction to pie chart</p>
+
+   <script>
+
+      const data = [10, 50, 80];
+      const r = 300;
+
+      const color = d3.scaleOrdinal()
+         .range(['red', 'blue', 'orange']);
+
+      const canvas = d3.select('body').append('svg').attr('width', 1500).attr('height', 1500);
+
+      const group = canvas.append('g').attr('transform', 'translate(300, 300)');
+
+      const arcGenerator = d3.arc().innerRadius(0).outerRadius(r); // inner radius 0 means it should be pie chart instead of donate chart
+
+      const pie = d3.pie().value(d => d); // pie() is a layout which means gets data and returns proper data for drawing pie (by giving proper angle)
+
+      const arcs = group.selectAll('.arc')
+         .data(pie(data))
+         .enter()
+         .append('g')
+         .attr('class', 'arc');
+
+      arcs.append('path')
+         .attr('d', arcGenerator)
+         .attr('fill', d => color(d.data));
+
+      // we where able to create path directly in parent group instead of greating group for everyt one,
+      // but then we were not able to add additinoal things like text lables to it. (like below)
+      // const arcs = group.selectAll('path')
+      //    .data(pie(data))
+      //    .enter()
+      //    .append('path')
+      //    .attr('d', arcGenerator)
+      //    .attr('fill', d => color(d.data));
+
+      arcs.append('text')
+         .attr('transform', (d) => { console.log(d); return `translate(${arcGenerator.centroid(d)})` })
+         .attr('text-anchor', 'middle')
+         .attr('font-size', '1.5rem')
+         .attr('font-family', 'tahoma')
+         .attr('fill', '#fff')
+         .text(d => d.data);
+
+
+   </script>
+
+</body>
+
+</html>

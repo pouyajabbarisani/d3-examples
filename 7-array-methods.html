@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>D3 - 7</title>
+   <script src="https://d3js.org/d3.v6.js"></script>
+</head>
+
+<body>
+   <p>Array methods</p>
+
+   <script>
+
+      const data = [10, 20, 30, 40, 70];
+
+      console.log(d3.min(data)); // min value
+      console.log(d3.max(data)); // max value
+      console.log(d3.extent(data)); // array of min and max value
+      console.log(d3.sum(data)); // sum of all the values
+      console.log(d3.mean(data)); // mean of the array
+      console.log(d3.median(data)); // median of the array
+      console.log(d3.shuffle(data)); // return a random sort of provided array
+
+   </script>
+
+</body>
+
+</html>
