@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>D3 - 12</title>
+   <script src="https://d3js.org/d3.v6.js"></script>
+</head>
+
+<body>
+   <p>introduction to Tree chart</p>
+
+   <script>
+
+      const data = {
+         name: 'John',
+         childern: [
+            {
+               name: 'Anna',
+               childern: [
+                  { name: 'Max' },
+                  { name: 'Jeff' },
+                  { name: 'Elisabeth' }
+               ]
+            },
+            {
+               name: 'Michael',
+               childern: [
+                  { name: 'Jack' },
+                  { name: 'Steve' }
+               ]
+            }
+         ]
+      };
+
+      const canvas = d3.select('body').append('svg').attr('width', 500).attr('height', 500)
+         .append('g').attr('transform', 'translate(50, 50)');
+
+      const tree = d3.tree().size([400, 400]);
+
+      const root = d3.hierarchy(data);
+      const links = treeLayout(root).links();
+      const linkPathGenerator = linkHorizontal()
+         .x(d => d.y)
+         .y(d => d.x);
+
+      const nodes = tree.nodes(data);
+      const links = tree.links(nodes);
+
+      const node = canvas.selectAll('.node')
+         .data(ndoes)
+         .enter()
+         .append('g')
+         .attr('class', 'node')
+         .attr('transform', d => `translate(${d.x}, ${d.y})`); // if we want to show horizontal tree, we should place them reversely: (y, x)
+
+      node.append('circle')
+         .attr('r', 7)
+         .attr('fill', 'steelblue');
+
+      node.append('text').text(d => d.name);
+
+      const linkVertical = d3.linkVertical();
+      // .projection(d => [d.y, d.x]); // default value of projection is [x, y] but we can chage it by using this line to make horizontal tree lines
+
+      canvas.selectAll('.link')
+         .data(links)
+         .enter()
+         .append('path')
+         .attr('class', 'link')
+         .attr('fill', 'none')
+         .attr('stroke', '#ADADAD')
+         .attr('d', linkVertical)
+
+
+   </script>
+
+</body>
+
+</html>

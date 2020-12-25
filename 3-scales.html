@@ -10,9 +10,38 @@
 
 <body>
 
-   <p>Having relative width according to contianer width</p>
+   <p>Scales (Linear, Log, Time, Ordinal and Band)</p>
 
    <script>
+
+      // Scale Types:
+
+      // scaleLinear => which has a domain and range and is linear (below example uses linear scale for width and colour)
+      //    // we can use .invert to get original data after scale
+
+      // scaleLog => has domain and range, too. also a base method (default: 10) for Exponentioal/logarithmic value (it's usefull for exponentional/logarithmic datasets)
+      //    // eg: if base value be 10, it means 500, 5000 and 50000 will be spaced equally.
+      //    // if base value be 2, it means 500, 1000, 2000 will be spaced equally.
+      //    // eg: const x = d3.scaleLog().domain([300, 150000]).range(0, 400).base(10);
+      //    // we can use x(value) to get scaled value and x.invert(value) to invert scaled value to the original value.
+
+      // scaleTime => has a domain and range method and is for time based values.
+      //    // eg: const t = d3.scaleTime().domain([new Date(2000,0,1), new Date(2010,0,1)]).range([0, 400]);
+      //    // we can use t(new date()) to scale up and t.invert for get the original data
+
+      // scaleOrdinal => for category based and distinguished (discrete) value sets.
+      //    // NOTE: there is no invert method for ordinal scale
+      //    // eg: const x = d3.scaleOrdinal().domain(['asia', 'europe', 'africa']).range(['red', 'orange', 'blue']);
+      //    // we can also use d3.schemeCategory10 Or d3.schemeCategory20 Or d3.schemeCategory20b Or d3.schemeCategory20c for range
+      //    // eg: .range(d3.schemeCategory10); These are d3 pre-defined colour set generators.
+
+      // scaleBand => explicitly for bandwidth in bar charts (width of bars)
+      //    // eg: const x = d3.scaleBand().domain(['first bar', 'second bar, 'another bar']).range([0, 400]).paddingInner(0.2).paddingOuter(0.2);
+      //    // for getting start x position of bar we will use x(name) and for getting width we will use x.bandwidth
+      //    // it will adjust width of bard and spaces between then, according to provided names in the domain.
+      //    // paddingInner for spaces between bars and paddingOuter for spaces on the sides of bars groups
+
+
       const data = [552, 90, 210, 340, 700]; // these are domain values and results after scaling values are rages.
       const width = 500;
       const height = 500;
