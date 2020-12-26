@@ -25,6 +25,21 @@
       // 💡 ticks() is count of numbers which is not so accurate!
       const axisTop = d3.axisTop().scale(widthScale); // 💡 Create top axis based on width scale
       // The new version provides axis in 4 orientations: d3.axisTop(), d3.axisBottom(), d3.axisLeft() and d3.axisRight()
+      // Note: Top axis and left axis, coming on their own place but we need to adjust bottom and right axis using group element and tranlate attribute.
+
+      // We can use .tickSizeInner(val) for inner tick sizes,
+      // .tickSizeOuter(val) for outer tick sizes,
+      // and .tickSize(val) for all at once
+
+      // Also we can define count of ticks by using .tick(count) method, it could be a different value in the result but close to defined value
+
+      // and we can change text format of axis by using .tickFormat() like below examples:
+      //    d3.axisBottom(xScale).tickFormat(d3.foramt(",.of")); // as a text
+      // or d3.axisBottom(xScale).tickFormat( d => d + 'Kg'); // as a function
+
+      // and finally, we can define explicit value as an array using .tickValues() method as below:
+      // eg: .tickValues([1, 2, 3, 4, 5])
+
 
       const canvas = d3.select('body').append('svg').attr('width', width).attr('height', height)
 
