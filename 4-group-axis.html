@@ -40,6 +40,9 @@
       // and finally, we can define explicit value as an array using .tickValues() method as below:
       // eg: .tickValues([1, 2, 3, 4, 5])
 
+      // Note: if we want to show ticks from bottom to top on side axis, we need to give reverse range
+      // also for bars, we need to calculate height based on totalHeight - y() which y is method for getting scaled value.
+      // eg: instead of .attr('height', d => y(d.height)); => .attr('height', d=> height - y(d.height));
 
       const canvas = d3.select('body').append('svg').attr('width', width).attr('height', height)
 

@@ -1,0 +1,5 @@
+D3 Has an interval method just like JavaScript which we can use to update our visualizations.
+
+d3.interval(() => {
+   // update in here
+}, 1000); // time in ms
