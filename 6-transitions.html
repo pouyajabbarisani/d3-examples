@@ -36,6 +36,33 @@
             });
       }
 
+      // Also as a more professional transition, we can use them like below:
+      // consider we are appending recs in an enter() method, for using transition for bar height and color,
+      // we can use transition before that attrs just like below:
+      // const t = d3.transition().duration(750);
+      // rects.enter().append('rect')
+      // .attr('height', 0).attr() // some attr and then transitional attrs:
+      // .transition(t) // using t defined above
+      //    .attr('height', d=> height - y(d[val]))
+      //    .attr('fill', 'blue');
+
+      // we can use .merge() method to apply attrs of update and enter at the same time
+      // so all the methods added AFTER merge call will apply to both update and enter selections
+      // eg: rects.enter().append('rect')
+      //    .attr('fill', 'gray')
+      //    .attr('height', 0)
+      //    .merge(rects)
+      //    .transition(t)
+      //       .attr('height', d => height - y(d[val]));
+
+      // 💡 Important
+      // When we change data list, (for example, consider an array which we are falpping between two mode, first showing first 8 months,
+      // and from every second, showing 2nd month to 10th month), in this chart, the removed and added item in every flap is two first items
+      // but if we change data array on every interval, it will act by default and adds and removes based on index order (it means it will 
+      // remove and add LAST two bars on every flap) for solving this issue, we can pass a second value to .data() as an array and return 
+      // value of this array represents the track source for d3 instead of tracking default by index. 
+      // for example .data(data, d => d.month);
+
    </script>
 
 </body>
