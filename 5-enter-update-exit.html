@@ -15,7 +15,21 @@
 
       // DOM elements < data elements => enter
       // Dom elements > data elements => exit
-      // Dom elements = data elements => update
+      // Dom elements = data elements => update (default method)
+
+      // for example, after selecting and appending data uising .data(), we first run .exist() as below to 
+      // delete old elements which not present in new data
+      // rects.exist().remove();
+      // then we can update old elements present in new data:
+      // rects.attr()... (just like update, but without .update() -since it's default method- and without append -since it's exist-)
+      // and then, finally, enter method to add new elements:
+      // rects.enter().append('rect').attr()...
+
+      // (below properties are not used in our code, it's just for having a better understanding from the pattern):
+      // when we call .data(d) on a group of selections, basically, it compares to the existing ones on the 
+      // selected list and returns an object of three main property, _enter (an array of not entered items),
+      // _edit (an array of the elemts which exist on the page but don't exist on our data provided - elements need to remove from the screen),
+      // and _group (All of the element currently are on the screen).
 
       const canvas = d3.select('body').append('svg').attr('width', 500).attr('height', 500);
 
