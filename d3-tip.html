@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>d3 - tip</title>
+   <script src="https://d3js.org/d3.v6.js"></script>
+   <script src="https://raw.githubusercontent.com/Caged/d3-tip/master/index.js"></script>
+</head>
+
+<body>
+   <p>Tooltips in D3</p>
+
+   <script>
+      const data = [];
+      const canvas = d3.select('body').append('svg');
+
+      // There is a additional library developed for D3 which gives us ability oof using tooltips in our D3 code
+      // and we need to import it before using tooltips in D3, it called d3-tip (which imported in head section above).
+
+      // There are 3 steps for using tooltip, 
+      // First, we need to initialize the tooltip:
+      const tip = d3.tip().attr('class', 'my-tooltip').html(d => {
+         const text = `the value is ${d.name}`
+         return text;
+      });
+
+      // Second, calling the topoltip in the context of the visualization:
+      canvas.call(tip); // or call on g 
+
+      // And third, adding event listeners
+      canvas.selectAll('rect').data(data)
+         .enter()
+         .append('rect')
+         // .attr().attr().attr()
+         .on('mouseover', tip.show)
+         .on('mouseout', tip.hide);
+
+   </script>
+</body>
+
+</html>
