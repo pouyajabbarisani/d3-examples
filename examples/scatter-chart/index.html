@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+   <meta charset='UTF-8'>
+   <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+   <title>D3 - Scatter chart</title>
+   <script src='https://d3js.org/d3.v6.js'></script>
+   <script src='https://cdn.jsdelivr.net/npm/d3-tip@0.9.1/dist/index.min.js'></script>
+   <style>
+      body {
+         padding: 8rem;
+         margin: 0;
+      }
+
+      svg {
+         border: 1px solid #3342;
+         position: relative;
+      }
+
+      #controllers-container {
+         padding: 1rem;
+         box-sizing: border-box;
+      }
+
+      .tooltip {
+         background: rgba(0, 0, 0, 0.8);
+         padding: 0.5rem;
+         border-radius: 0.3rem;
+         color: #fff !important;
+         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+         position: absolute;
+      }
+
+      input[type=range] {
+         width: 20rem;
+      }
+   </style>
+</head>
+
+<body>
+   <div id='svg-container'></div>
+   <div id='controllers-container'>
+      <button id="trigger-button">Start</button>
+      <label for="slider" id="slider-label"></label>
+      <input type="range" class="slider" id="slider" name="slider">
+   </div>
+   <script>
+      // Note: Use http-server or similar tools to run this page, 
+      // because this page uses d3.json which performs a fetch call in action.
+
+      const margins = { top: 20, right: 20, bottom: 70, left: 70 };
+      const width = 900 - (margins.left + margins.right);
+      const height = 600 - (margins.top + margins.bottom);
+
+      d3.json('data.json').then(data => {
+         const continents = ['europe', 'asia', 'americas', 'africa'];
+         for (let i of data) {
+            i.countries = i && i.countries.filter(value => (value.income && value.life_exp));
+         }
+
+         let time = 0;
+
+         const slider = document.querySelector('#slider');
+         slider.setAttribute('min', data[0].year);
+         slider.setAttribute('max', data[data.length - 1].year);
+         slider.addEventListener('input', (e) => {
+            time = e.target.value - data[0].year;
+            update(data[time])
+         });
+         slider.addEventListener('change', (e) => { // to make it work on the firefox, too
+            time = e.target.value - data[0].year;
+            update(data[time])
+         });
+
+         const canvas = d3.select('#svg-container').append('svg').attr('width', 900).attr('height', 600);
+         const g = canvas.append('g').attr('transform', `translate( ${margins.left}, ${margins.top})`);
+
+         var tooltip = d3.select('#svg-container')
+            .append("div")
+            .attr('class', 'tooltip')
+            .style('opacity', 0);
+
+         // Labels
+         const xLabel = g.append('text')
+            .attr('y', height + 50)
+            .attr('x', width / 2)
+            .attr('font-size', '1rem')
+            .attr('text-anchor', 'middle')
+            .style('font-family', 'tahoma')
+            .text('GDP Per Capita ($)')
+         const yLabel = g.append('text')
+            .attr('transform', 'rotate(-90)')
+            .attr('y', -40)
+            .attr('x', -230)
+            .attr('font-size', '1rem')
+            .attr('text-anchor', 'middle')
+            .style('font-family', 'tahoma')
+            .text('Life Expectancy (Years)')
+
+         const colourScale = d3.scaleOrdinal().domain(continents).range(d3['schemeCategory10']);
+
+         const x = d3.scaleLog() // income (GDP)
+            .domain([100, 150000])
+            .range([0, width])
+            .base(10);
+
+         const y = d3.scaleLinear() // Life expectancy
+            .domain([0, 90])
+            .range([height, 0]);
+
+         const areaScale = d3.scaleLinear()
+            .range([25 * Math.PI, 1500 * Math.PI])
+            .domain([2000, 1400000000]);
+
+         const leftAxisCall = d3.axisLeft(y).ticks(6);
+         g.append('g').attr('transform', `translate(0, 0)`).call(leftAxisCall);
+
+         const bottomAxisCall = d3.axisBottom(x).ticks(3).tickValues([400, 4000, 40000]).tickFormat(d3.format('$'));
+         g.append('g').attr('transform', `translate(0, ${height})`).call(bottomAxisCall);
+
+         const year = g.append('g').attr('transform', `translate(${width - 70}, ${height - 25})`);
+         const yearText = year.append('text').style('font-size', '1.7rem').style('font-family', 'tahoma').attr('fill', '#777').text(data[0].year);
+
+
+         const update = (data) => {
+
+            const t = d3.transition().duration(300);
+
+            console.log(data)
+            const circles = g.selectAll('circle').data(data.countries, d => d.country);
+
+            circles.exit().remove(); // to remove deleted items
+            circles.enter().append('circle')
+               .attr('fill', d => colourScale(d.continent))
+               .merge(circles) // to do update
+               .on('mouseover', (e, d) => {
+                  tooltip.html(`Country: ${d.country} <br/>
+                  Continent: ${d.continent} <br/>
+                  Population: ${d.population} <br/>
+                  Income (GDP): ${d.income}$ <br/>
+                  Life Expectancy: ${d.life_exp} years`)
+                     .style('opacity', 1)
+                     .style('left', `${e.clientX - 60}px`) // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
+                     .style('top', `${e.clientY - 130}px`)
+               })
+               .on('mousemove', (e, d) => {
+                  tooltip.html(`Country: ${d.country} <br/>
+                  Continent: ${d.continent} <br/>
+                  Population: ${d.population} <br/>
+                  Income (GDP): ${d.income}$ <br/>
+                  Life Expectancy: ${d.life_exp} years`)
+                     .style('opacity', 1)
+                     .style('left', `${e.clientX - 60}px`) // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
+                     .style('top', `${e.clientY - 130}px`)
+               })
+               .on('mouseout', (e, d) => {
+                  tooltip.style('opacity', 0).html('');
+               })
+               .transition(t)
+               .attr('r', d => Math.sqrt(areaScale(d.population) / Math.PI))
+               .attr('cx', d => x(d.income))
+               .attr('cy', d => y(d.life_exp))
+               .attr('opacity', 0.7);
+
+            yearText.text(data.year);
+            console.log(document.querySelector('#slider').value)
+            document.querySelector('#slider').value = data.year;
+            document.querySelector('#slider-label').innerText = data.year;
+
+         }
+
+
+         const step = () => {
+            time = (time < 214) ? time + 1 : 0
+            update(data[time])
+         }
+         let interval;
+         const button = document.querySelector('#trigger-button')
+         button.addEventListener('click', () => {
+            if (document.querySelector('#trigger-button').innerText == 'Start') {
+               interval = setInterval(step, 100);
+               document.querySelector('#trigger-button').innerText = 'Stop';
+            }
+            else {
+               clearInterval(interval);
+               document.querySelector('#trigger-button').innerText = 'Start';
+            }
+         });
+         update(data[time]);
+
+      });
+
+   </script>
+</body>
+
+</html>
