@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+   <meta charset='UTF-8'>
+   <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+   <title>D3 - Line chart</title>
+   <script src='https://d3js.org/d3.v6.js'></script>
+   <style>
+      body {
+         padding: 2rem;
+         margin: 0;
+      }
+
+      svg {
+         border: 1px solid #3342;
+         position: relative;
+      }
+
+      #info-box {
+         display: block;
+         padding: 0.5rem;
+         border-radius: 0.3rem;
+         background: rgba(0, 0, 0, 0.6);
+         color: #fff !important;
+         position: absolute;
+         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+         font-size: 0.9rem;
+         line-height: 1.5;
+
+      }
+   </style>
+</head>
+
+<body>
+   <div id='svg-container'></div>
+   <script>
+
+      const data = [
+         { year: 2012, income: 10000, jobTitle: 'Intern Salesman' },
+         { year: 2013, income: 23000, jobTitle: 'Salesman' },
+         { year: 2014, income: 69000, jobTitle: 'Sales Operator' },
+         { year: 2015, income: 24000, jobTitle: 'Salesman' },
+         { year: 2016, income: 28000, jobTitle: 'Salesman' },
+         { year: 2017, income: 31000, jobTitle: 'Sales Operator' },
+         { year: 2018, income: 44000, jobTitle: 'Lead Sales Operator' },
+         { year: 2019, income: 62000, jobTitle: 'Head Of Marketing' },
+         { year: 2020, income: 90000, jobTitle: 'COO' }
+      ];
+
+      const margins = { top: 20, right: 20, bottom: 70, left: 70 };
+      const width = 900 - (margins.left + margins.right);
+      const height = 600 - (margins.top + margins.bottom);
+
+      const canvas = d3.select('#svg-container').append('svg').attr('width', 900).attr('height', 600);
+      const g = canvas.append('g').attr('transform', `translate( ${margins.left}, ${margins.top})`);
+
+      const xLabel = g.append('text')
+         .attr('y', height + 50)
+         .attr('x', width / 2)
+         .attr('font-size', '0.8rem')
+         .attr('text-anchor', 'middle')
+         .style('font-family', 'tahoma')
+         .text('Year');
+
+      const yLabel = g.append('text')
+         .attr('transform', 'rotate(-90)')
+         .attr('y', -47)
+         .attr('x', -230)
+         .attr('font-size', '0.8rem')
+         .attr('text-anchor', 'middle')
+         .style('font-family', 'tahoma')
+         .text('Annual Income');
+
+      const colourScale = d3.scaleLinear().domain([0, 100000]).range(['#f5ab00', '#00b04f']);
+
+      const x = d3.scaleLinear() // Year
+         .domain([data[0].year - 0.3, data[data.length - 1].year + 0.3])
+         .range([0, width]);
+
+      const y = d3.scaleLinear() // Annual Income
+         .domain([data[0].income - 5000, data[data.length - 1].income + 5000])
+         .range([height, 0]);
+
+      const leftAxisCall = d3.axisLeft(y).ticks(8);
+      g.append('g').attr('transform', `translate(0, 0)`).call(leftAxisCall);
+
+      const bottomAxisCall = d3.axisBottom(x).ticks(8).tickFormat(d3.format('d'));
+      g.append('g').attr('transform', `translate(0, ${height})`).call(bottomAxisCall);
+
+
+      const infoBox = d3.select('#svg-container').append('div')
+         .attr('id', 'info-box').style('opacity', 0).style('top', (height - 50) + 'px').style('left', (width - 100) + 'px');
+
+      const line = d3.line()
+         .x(d => x(d.year))
+         .y(d => y(d.income))
+         .curve(d3.curveCatmullRom.alpha(0.7));
+      // I found a good list of different types of curves in here:
+      // http://bl.ocks.org/d3indepth/b6d4845973089bc1012dec1674d3aff8
+
+      const t = d3.transition().duration(200);
+
+      const yPointerLine = d3.line()
+         .x(d => x(d[0]))
+         .y(d => y(d[1]));
+      const yPointer = g.append('path')
+         .attr('class', 'line')
+         .style('stroke-dasharray', ('2, 2'))
+         .attr('fill', 'none')
+         .attr('stroke-width', '1px')
+         .attr('stroke', '#bbb')
+         .attr('d', yPointerLine([[data[0].year - 0.3, data[0].income - 5000], [data[0].year - 0.3, data[0].income - 5000]])) // [0, 0]
+
+      const xPointerLine = d3.line()
+         .x(d => x(d[0]))
+         .y(d => y(d[1]));
+      const xPointer = g.append('path')
+         .attr('class', 'line')
+         .style('stroke-dasharray', ('2, 2'))
+         .attr('fill', 'none')
+         .attr('stroke-width', '1px')
+         .attr('stroke', '#bbb')
+         .attr('d', xPointerLine([[data[0].year - 0.3, data[0].income - 5000], [data[0].year - 0.3, data[0].income - 5000]])) // [0, 0]
+
+      const drawPointerLines = (year, income) => {
+         console.log('called')
+         yPointer
+            .transition()
+            .duration(100)
+            .attr('d', yPointerLine([[data[0].year - 0.3, data[0].income - 5000], [data[0].year - 0.3, income]]))
+            .attr('transform', `translate(${x(year)}, 0)`); // I used transform for having transition
+         xPointer
+            .transition()
+            .duration(100)
+            .attr('d', xPointerLine([[data[0].year - 0.3, data[0].income - 5000], [year, data[0].income - 5000]]))
+            .attr('transform', `translate(0, ${(height - y(income)) > 0 ? -(height - y(income)) : (height - y(income))})`); // I used transform for having transition
+      }
+
+      // Creating a linear gradient to use as line colour
+      var defs = g.append('defs');
+      var gradient = defs.append('linearGradient')
+         .attr('id', 'svgGradient')
+         .attr('x1', '50%')
+         .attr('x2', '50%')
+         .attr('y1', '100%')
+         .attr('y2', '0%');
+      gradient.append('stop')
+         .attr('class', 'start')
+         .attr('offset', '0%')
+         .attr('stop-color', '#f5ab00')
+         .attr('stop-opacity', 1);
+      gradient.append('stop')
+         .attr('class', 'end')
+         .attr('offset', '100%')
+         .attr('stop-color', '#00b04f')
+         .attr('stop-opacity', 1);
+
+      g.append('path')
+         .attr('fill', 'none')
+         .attr('stroke-width', '3px')
+         .transition(t)
+         .attr('d', line(data))
+         .attr('stroke', 'url(#svgGradient)')
+
+      const circles = g.selectAll('circle').data(data)
+         .enter()
+         .append('circle')
+         .attr('cx', d => x(d.year))
+         .attr('cy', d => y(d.income))
+         .attr('fill', d => colourScale(d.income))
+         .transition()
+         .duration(100)
+         .attr('r', 5)
+         .attr('fill-opacity', 0.5)
+
+
+      const poinerLinerDrawerCaller = (e, d) => {
+         const lowerIndexes = (data.filter(d => d.year < (x.invert(e.clientX) - 1))).map(d => d.year);
+         const count = lowerIndexes.length;
+         const higherLowerAverage = (data[count] && data[count - 1]) ? ((data[count - 1].year + data[count].year) / 2) :
+            (data[count - 1] ? (data[count - 1] + 0.5) : (data[count] - 0.5));
+         if (data[count] && x.invert(e.clientX) - 1 >= higherLowerAverage) {
+            drawPointerLines(data[count].year, data[count].income);
+            g.selectAll('circle').transition().duration(100).attr('r', (d, i) => i == count ? 8 : 5).attr('fill-opacity', (d, i) => i == count ? 0.8 : 0.5);
+            infoBox.html(`Year: ${data[count].year}<br/>Job Title: ${data[count].jobTitle}<br/>Income: ${data[count].income}$`).style('opacity', 1);
+         }
+         else if (data[count - 1]) {
+            drawPointerLines(data[count - 1].year, data[count - 1].income);
+            g.selectAll('circle').transition().duration(100).attr('r', (d, i) => i == count - 1 ? 8 : 5).attr('fill-opacity', (d, i) => i == count - 1 ? 0.8 : 0.5);
+            infoBox.html(`Year: ${data[count - 1].year}<br/>Job Title: ${data[count - 1].jobTitle}<br/>Income: ${data[count - 1].income}$`).style('opacity', 1);
+         }
+      }
+
+      g.append('rect')
+         .attr('fill-opacity', '0')
+         .attr('width', width)
+         .attr('height', height)
+         .on('mouseover', (e, d) => {
+            poinerLinerDrawerCaller(e, d)
+         })
+         .on('mousemove', (e, d) => {
+            poinerLinerDrawerCaller(e, d)
+         })
+         .on('mouseout', (e, d) => {
+            yPointer.attr('d', '') // [0, 0]
+            xPointer.attr('d', '') // [0, 0]
+            infoBox.html('').style('opacity', 0);
+            g.selectAll('circle')
+               .transition()
+               .duration(100)
+               .attr('r', 5)
+               .attr('fill-opacity', 0.5);
+         });
+
+   </script>
+</body>
+
+</html>
