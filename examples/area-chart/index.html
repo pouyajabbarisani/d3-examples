@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+   <meta charset='UTF-8'>
+   <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+   <title>D3 - Area chart</title>
+   <script src='https://d3js.org/d3.v6.js'></script>
+   <style>
+      body {
+         padding: 2rem;
+         margin: 0;
+      }
+
+      svg {
+         border: 1px solid #3342;
+         position: relative;
+      }
+   </style>
+</head>
+
+<body>
+   <div id='svg-container'></div>
+   <script>
+
+      const data = [
+         { year: 2012, income: 10000, jobTitle: 'Intern Salesman' },
+         { year: 2013, income: 23000, jobTitle: 'Salesman' },
+         { year: 2014, income: 69000, jobTitle: 'Sales Operator' },
+         { year: 2015, income: 24000, jobTitle: 'Salesman' },
+         { year: 2016, income: 28000, jobTitle: 'Salesman' },
+         { year: 2017, income: 31000, jobTitle: 'Sales Operator' },
+         { year: 2018, income: 44000, jobTitle: 'Lead Sales Operator' },
+         { year: 2019, income: 62000, jobTitle: 'Head Of Marketing' },
+         { year: 2020, income: 90000, jobTitle: 'COO' }
+      ];
+
+      const margins = { top: 20, right: 20, bottom: 70, left: 70 };
+      const width = 900 - (margins.left + margins.right);
+      const height = 600 - (margins.top + margins.bottom);
+
+      const canvas = d3.select('#svg-container').append('svg').attr('width', 900).attr('height', 600);
+      const g = canvas.append('g').attr('transform', `translate( ${margins.left}, ${margins.top})`);
+
+      const xLabel = g.append('text')
+         .attr('y', height + 50)
+         .attr('x', width / 2)
+         .attr('font-size', '0.8rem')
+         .attr('text-anchor', 'middle')
+         .style('font-family', 'tahoma')
+         .text('Year');
+
+      const yLabel = g.append('text')
+         .attr('transform', 'rotate(-90)')
+         .attr('y', -47)
+         .attr('x', -230)
+         .attr('font-size', '0.8rem')
+         .attr('text-anchor', 'middle')
+         .style('font-family', 'tahoma')
+         .text('Annual Income');
+
+      const colourScale = d3.scaleLinear().domain([0, 100000]).range(['#f5ab00', '#00b04f']);
+
+      const x = d3.scaleLinear() // Year
+         .domain([data[0].year - 0.3, data[data.length - 1].year + 0.3])
+         .range([0, width]);
+
+      const y = d3.scaleLinear() // Annual Income
+         .domain([0, data[data.length - 1].income + 5000])
+         .range([height, 0]);
+
+      const leftAxisCall = d3.axisLeft(y).ticks(8);
+      g.append('g').attr('transform', `translate(0, 0)`).call(leftAxisCall);
+
+      const bottomAxisCall = d3.axisBottom(x).ticks(8).tickFormat(d3.format('d'));
+      g.append('g').attr('transform', `translate(0, ${height})`).call(bottomAxisCall);
+
+      const area = d3.area()
+         .x(function (d) { return x(d.year) })
+         .y0(y(0))
+         .y1(function (d) { return y(d.income) })
+
+      // Creating a linear gradient to use as line colour
+      var defs = g.append('defs');
+      var gradient = defs.append('linearGradient')
+         .attr('id', 'svgGradient')
+         .attr('x1', '50%')
+         .attr('x2', '50%')
+         .attr('y1', '100%')
+         .attr('y2', '0%');
+      gradient.append('stop')
+         .attr('class', 'start')
+         .attr('offset', '0%')
+         .attr('stop-color', '#f5ab0044')
+         .attr('stop-opacity', 1);
+      gradient.append('stop')
+         .attr('class', 'end')
+         .attr('offset', '100%')
+         .attr('stop-color', '#00b04fcc')
+         .attr('stop-opacity', 1);
+
+      g.append('path')
+         .datum(data)
+         .attr('stroke-width', '3px')
+         .attr("fill", "url(#svgGradient)")
+         .attr("stroke", "url(#svgGradient)")
+         .attr("stroke-width", 1.5)
+         .attr('d', d => area(d))
+
+         // based on my test, it seems it works as expected if we remove .datum and
+         // change 'd' to .attr('d', area(data)), too.
+
+   </script>
+</body>
+
+</html>
