@@ -24,10 +24,21 @@
    <script>
 
       const data = [
-         { year: 2012, income: 10000, jobTitle: 'Intern Salesman' },
+         { year: 2001, income: 23000, jobTitle: 'Salesman' },
+         { year: 2002, income: 19000, jobTitle: 'Sales Operator' },
+         { year: 2003, income: 24000, jobTitle: 'Salesman' },
+         { year: 2004, income: 28000, jobTitle: 'Salesman' },
+         { year: 2005, income: 31000, jobTitle: 'Sales Operator' },
+         { year: 2006, income: 10000, jobTitle: 'Intern Salesman' },
+         { year: 2007, income: 10000, jobTitle: 'Intern Salesman' },
+         { year: 2008, income: 23000, jobTitle: 'Salesman' },
+         { year: 2009, income: 49000, jobTitle: 'Sales Operator' },
+         { year: 2010, income: 24000, jobTitle: 'Salesman' },
+         { year: 2011, income: 28000, jobTitle: 'Salesman' },
+         { year: 2012, income: 31000, jobTitle: 'Sales Operator' },
          { year: 2013, income: 23000, jobTitle: 'Salesman' },
          { year: 2014, income: 69000, jobTitle: 'Sales Operator' },
-         { year: 2015, income: 24000, jobTitle: 'Salesman' },
+         { year: 2015, income: 34000, jobTitle: 'Salesman' },
          { year: 2016, income: 28000, jobTitle: 'Salesman' },
          { year: 2017, income: 31000, jobTitle: 'Sales Operator' },
          { year: 2018, income: 44000, jobTitle: 'Lead Sales Operator' },
@@ -41,6 +52,10 @@
 
       const canvas = d3.select('#svg-container').append('svg').attr('width', 900).attr('height', 600);
       const g = canvas.append('g').attr('transform', `translate( ${margins.left}, ${margins.top})`);
+      g.append('g').attr('class', 'y-axis');
+      g.append('g').attr('class', 'x-axis');
+
+      const zoom = d3.zoom();
 
       const xLabel = g.append('text')
          .attr('y', height + 50)
@@ -61,7 +76,11 @@
 
       const colourScale = d3.scaleLinear().domain([0, 100000]).range(['#f5ab00', '#00b04f']);
 
-      const x = d3.scaleLinear() // Year
+      const staticX = d3.scaleLinear() // Year | this one is a base scale for calculation on zoom
+         .domain([data[0].year - 0.3, data[data.length - 1].year + 0.3])
+         .range([0, width]);
+
+      const x = d3.scaleLinear() // Year | this one is flexible scale for zoomr
          .domain([data[0].year - 0.3, data[data.length - 1].year + 0.3])
          .range([0, width]);
 
@@ -70,15 +89,14 @@
          .range([height, 0]);
 
       const leftAxisCall = d3.axisLeft(y).ticks(8);
-      g.append('g').attr('transform', `translate(0, 0)`).call(leftAxisCall);
+      g.select('.y-axis').attr('transform', `translate(0, 0)`).call(leftAxisCall);
 
-      const bottomAxisCall = d3.axisBottom(x).ticks(8).tickFormat(d3.format('d'));
-      g.append('g').attr('transform', `translate(0, ${height})`).call(bottomAxisCall);
+      const bottomAxisCreator = (x) => {
+         const bottomAxisCall = d3.axisBottom(x).ticks(8).tickFormat(d3.format('d'));
+         g.select('.x-axis').attr('transform', `translate(0, ${height})`).call(bottomAxisCall);
+      }
+      bottomAxisCreator(x);
 
-      const area = d3.area()
-         .x(function (d) { return x(d.year) })
-         .y0(y(0))
-         .y1(function (d) { return y(d.income) })
 
       // Creating a linear gradient to use as line colour
       var defs = g.append('defs');
@@ -99,16 +117,55 @@
          .attr('stop-color', '#00b04fcc')
          .attr('stop-opacity', 1);
 
-      g.append('path')
-         .datum(data)
-         .attr('stroke-width', '3px')
-         .attr("fill", "url(#svgGradient)")
-         .attr("stroke", "url(#svgGradient)")
-         .attr("stroke-width", 1.5)
-         .attr('d', d => area(d))
+      const contentArea = g.append('clipPath') // to create a visible area for showing only current zoom position and avoid from overflow
+         .attr('id', 'clip')
+         .append('rect')
+         .attr('width', width)
+         .attr('height', height)
 
+      const areaPath = g.append('g').attr('class', 'path-container').attr('clip-path', 'url(#clip)').append('path').attr('class', 'area-path');
+
+      const area = d3.area()
+         .x(function (d) { return x(d.year) })
+         .y0(y(0))
+         .y1(function (d) { return y(d.income) })
+
+      const generatePath = () => {
+         area.x(function (d) { return x(d.year) })
+            .y0(y(0))
+            .y1(function (d) { return y(d.income) })
+
+         canvas.select('.area-path').datum(data)
+            .attr('stroke-width', '3px')
+            .attr('fill', 'url(#svgGradient)')
+            .attr('stroke', 'url(#svgGradient)')
+            .attr('stroke-width', 1.5)
+            .attr('d', d => area(d))
          // based on my test, it seems it works as expected if we remove .datum and
          // change 'd' to .attr('d', area(data)), too.
+      }
+      generatePath();
+
+      // zoom
+      const zoomBehavior = d3.zoom()
+         .scaleExtent([0.5, 3])
+         .translateExtent([
+            [0, 0],
+            [width, height],
+         ])
+         .on('zoom', (event) => {
+            const zoomState = event.transform;
+            if (zoomState) {
+               const newXScale = zoomState.rescaleX(staticX);
+               console.log('A', zoomState)
+               console.log('B', newXScale.domain())
+               x.domain(newXScale.domain());
+               bottomAxisCreator(x);
+            }
+            generatePath();
+         });
+
+      canvas.call(zoomBehavior);
 
    </script>
 </body>
