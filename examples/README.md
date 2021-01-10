@@ -10,7 +10,7 @@
    <a href="https://github.com/pouyajabbarisani/d3-examples/tree/master/examples/area-chart">
       <img src="https://github.com/pouyajabbarisani/d3-examples/raw/master/examples/area-chart/preview.gif" width="45%" />
    </a>
-      <a href="https://github.com/pouyajabbarisani/d3-examples/tree/master/examples/scatter-chart">
+   <a href="https://github.com/pouyajabbarisani/d3-examples/tree/master/examples/scatter-chart">
       <img src="https://github.com/pouyajabbarisani/d3-examples/raw/master/examples/scatter-chart/preview.gif" width="45%" />
    </a>
    <a href="https://github.com/pouyajabbarisani/d3-examples/tree/master/examples/bar-chart">
