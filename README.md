@@ -3,6 +3,12 @@
 
 Data visualization always was a nightmare for me in my projects but when I decided to learn THE MOST ADVANCED AND FLEXIBLE tool for it (which is D3.js) I found it quite excitement and lovely! You can start by checking my codes, and comments and then checking the example folder which has some of the most usefull and complex data visualizations to learn as a Front End Developer.
 
+### Previews
+
+| [![VideoBlocks](https://github.com/pouyajabbarisani/d3-examples/raw/master/examples/scatter-chart/preview.gif)](https://github.com/pouyajabbarisani/d3-examples/tree/master/examples/scatter-chart)  | [![VideoBlocks](https://github.com/pouyajabbarisani/d3-examples/raw/master/examples/line-chart/preview.gif)](https://github.com/pouyajabbarisani/d3-examples/tree/master/examples/line-chart) | 
+|:---:|:---:|:---:|
+| [![VideoBlocks](https://github.com/pouyajabbarisani/d3-examples/raw/master/examples/area-chart/preview.png)](https://github.com/pouyajabbarisani/d3-examples/tree/master/examples/area-chart)  | [![VideoBlocks](https://github.com/pouyajabbarisani/d3-examples/raw/master/examples/bar-chart/preview.png)](https://github.com/pouyajabbarisani/d3-examples/tree/master/examples/bar-chart) | 
+
 ### Contribute
 
 If you have made some stunning data visualization projects before and you want to share it in a collection, this is a good repository for contribute.
