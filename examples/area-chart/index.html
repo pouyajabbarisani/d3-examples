@@ -157,8 +157,6 @@
             const zoomState = event.transform;
             if (zoomState) {
                const newXScale = zoomState.rescaleX(staticX);
-               console.log('A', zoomState)
-               console.log('B', newXScale.domain())
                x.domain(newXScale.domain());
                bottomAxisCreator(x);
             }

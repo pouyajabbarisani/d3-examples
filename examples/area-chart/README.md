@@ -1,4 +1,3 @@
-# D3.js Area Chart Example
+# D3.js Area Chart Example + Zoom and Pan
 
-![Area Chart - Preview](preview.png)
-
+![Area Chart - Preview](preview.gif)
