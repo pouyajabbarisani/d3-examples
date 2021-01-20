@@ -1,5 +1,5 @@
 # D3.js Data-Visualization Examples 
-### Explained a variety of different types of data visualizations and charts to learn and use in your front end projects.
+### Explained a variety of different types of data visualizations and charts to learn and use in your projects.
 
 Data visualization always was a nightmare for me in my projects but when I decided to learn THE MOST ADVANCED AND FLEXIBLE tool for it (which is D3.js) It is quite exciting and lovely! You can start by checking my codes, and comments and then checking the example folder which has some of the most usefull and complex data visualizations to learn as a Front End Developer.
 
